@@ -86,7 +86,7 @@ class Voter:
 
     def _vote(self, server_id: str):
         print(f"Voting for server {server_id}...")
-        wait = WebDriverWait(self.driver, TIMEOUT)
+        wait = WebDriverWait(self.driver, self.TIMEOUT)
 
         self.driver.execute_script("window.open('');")
         self.driver.switch_to.window(self.driver.window_handles[-1])
@@ -98,6 +98,7 @@ class Voter:
             self._handle_consent(wait)
             self._accept_terms(wait)
             self._click_vote_button(wait)
+            self._login_to_steam(wait)
         finally:
             self.driver.close()
             self.driver.switch_to.window(self.driver.window_handles[0])
@@ -117,9 +118,13 @@ class Voter:
         vote_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#vote-form-block > form:nth-child(3) > input:nth-child(5)")))
         vote_button.click()
 
+    def _login_to_steam(self, wait: WebDriverWait):
+        login_button = wait.until(EC.element_to_be_clickable((By.ID, "imageLogin")))
+        login_button.click()
+
     def _claim(self, claim_id: int):
         print(f"Claiming rewards for server {claim_id}...")
-        wait = WebDriverWait(self.driver, TIMEOUT)
+        wait = WebDriverWait(self.driver, self.TIMEOUT)
 
         self.driver.get("https://menatworkgaming.com/")
 
